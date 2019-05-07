@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.AssociatedProcdefEntity">
+
+  <!-- COMMENT INSERT -->
+
+  <insert id="insertAssociatedProcdef" parameterType="org.activiti.engine.impl.persistence.entity.AssociatedProcdefEntity">
+    insert into ${prefix}ACT_RE_ASSOCIATED_PROCDEF(ID_,REV_, ASSOCIATED_BIZ_KEY_, PROC_DEF_ID_,ORDER_)
+    values (#{id ,jdbcType=VARCHAR},
+    1,
+      #{associatedBizKey ,jdbcType=VARCHAR},
+      #{procDefId ,jdbcType=VARCHAR},
+      #{order ,jdbcType=INTEGER}
+      )
+  </insert>
+
+  
+  <delete id="deleteAssociatedProcdef" parameterType="org.activiti.engine.impl.persistence.entity.AssociatedProcdefEntity">
+    delete from ${prefix}ACT_RE_ASSOCIATED_PROCDEF where ID_ = #{id} and REV_ = #{revision} 
+  </delete>
+  
+  <update id="updateAssociatedProcdef" parameterType="org.activiti.engine.impl.persistence.entity.AssociatedProcdefEntity">
+      update ${prefix}ACT_RE_ASSOCIATED_PROCDEF set
+      REV_ = #{revisionNext, jdbcType=INTEGER},
+      ASSOCIATED_BIZ_KEY_ = #{associatedBizKey ,jdbcType=VARCHAR},
+      PROC_DEF_ID_ = #{procDefId ,jdbcType=VARCHAR},
+      ORDER_=#{order,jdbcType=INTEGER}
+      where ID_ = #{id} and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+  
+   <resultMap id="BaseResultMap" type="org.activiti.engine.impl.persistence.entity.AssociatedProcdefEntity">
+
+    <id column="ID_" jdbcType="VARCHAR" property="id" />
+    <result column="REV_" jdbcType="INTEGER" property="revision" />
+     <result column="ASSOCIATED_BIZ_KEY_" property="associatedBizKey" jdbcType="VARCHAR" />
+    <result column="PROC_DEF_ID_" property="procDefId" jdbcType="VARCHAR" />
+    <result column="ORDER_" property="order" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <select id="selectAssociatedProcdefByBizKey" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="BaseResultMap">
+    select * from ${prefix}ACT_RE_ASSOCIATED_PROCDEF where ASSOCIATED_BIZ_KEY_ = #{parameter} order by ORDER_
+  </select>
+  
+  <select id="selectProcessDefinitionOrder" parameterType="map" resultType="integer">
+    select  ORDER_ from ${prefix}ACT_RE_ASSOCIATED_PROCDEF where ASSOCIATED_BIZ_KEY_ = #{associatedBizKey}  and PROC_DEF_ID_=#{procDefId}
+  </select>
+  
+</mapper>

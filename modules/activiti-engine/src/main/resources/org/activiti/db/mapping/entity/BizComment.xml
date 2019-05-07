@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.BizCommentEntity">
+
+  <!-- COMMENT INSERT -->
+
+  <insert id="insertBizComment" parameterType="org.activiti.engine.impl.persistence.entity.BizCommentEntity">
+    insert into ${prefix}ACT_HI_BIZ_COMMENT 
+    (ID_,
+    REV_, 
+    ASSOCIATED_BIZ_KEY_, 
+    ASSOCIATED_INST_ID_,
+    PROC_INST_ID_,
+    PROC_INST_NAME_,
+    PROC_DEF_ID_,
+    BUSINESS_KEY_,
+    ACT_ID_,
+    ACT_NAME_,
+    ACT_TYPE_,
+    TASK_ID_,
+    USER_ID_,
+    GROUPS_,
+    COMPLETE_TIME_,
+    MESSAGE_,
+    ADVICE_,
+    IS_START_,
+    ORDER_)
+    values (#{id ,jdbcType=VARCHAR},
+    1,
+      #{associatedBizKey ,jdbcType=VARCHAR},
+      #{associatedInstId ,jdbcType=VARCHAR},
+      #{procInstId ,jdbcType=VARCHAR},
+      #{procInstName ,jdbcType=VARCHAR},
+      #{procDefId ,jdbcType=VARCHAR},
+      #{businessKey ,jdbcType=VARCHAR},
+      #{actId ,jdbcType=VARCHAR},
+      #{actName ,jdbcType=VARCHAR},
+      #{actType ,jdbcType=VARCHAR},
+      #{taskId ,jdbcType=VARCHAR},
+      #{userId ,jdbcType=VARCHAR},
+      #{groups ,jdbcType=VARCHAR},
+      #{completeTime ,jdbcType=TIMESTAMP},
+      #{message ,jdbcType=VARCHAR},
+      #{advice ,jdbcType=VARCHAR},
+      #{startAct ,jdbcType=BOOLEAN},
+      #{order ,jdbcType=INTEGER}
+      )
+  </insert>
+
+  
+  <delete id="deleteBizComment" parameterType="org.activiti.engine.impl.persistence.entity.BizCommentEntity">
+    delete from ${prefix}ACT_HI_BIZ_COMMENT where ID_ = #{id} and REV_ = #{revision} 
+  </delete>
+  
+  <update id="updateBizComment" parameterType="org.activiti.engine.impl.persistence.entity.BizCommentEntity">
+     update ${prefix}ACT_HI_BIZ_COMMENT set
+      REV_ = #{revisionNext, jdbcType=INTEGER},
+      PROC_INST_ID_ = #{procInstId ,jdbcType=VARCHAR},
+      PROC_INST_NAME_ = #{procInstName ,jdbcType=VARCHAR},
+      PROC_DEF_ID_ = #{procDefId ,jdbcType=VARCHAR},
+      BUSINESS_KEY_ = #{businessKey ,jdbcType=VARCHAR},
+      TASK_ID_ = #{taskId ,jdbcType=VARCHAR},
+      USER_ID_ = #{userId ,jdbcType=VARCHAR},
+      GROUPS_ = #{groups ,jdbcType=VARCHAR},
+      COMPLETE_TIME_ = #{completeTime ,jdbcType=VARCHAR},
+      MESSAGE_ = #{message ,jdbcType=VARCHAR},
+      ADVICE_ = #{advice ,jdbcType=VARCHAR}
+      where ID_ = #{id} and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+  
+   <resultMap id="BaseResultMap" type="org.activiti.engine.impl.persistence.entity.BizCommentEntity">
+
+   <id column="ID_" property="id" jdbcType="VARCHAR" />
+    <result column="REV_" jdbcType="INTEGER" property="revision" />
+    <result column="ASSOCIATED_BIZ_KEY_" property="associatedBizKey" jdbcType="VARCHAR" />
+    <result column="ASSOCIATED_INST_ID_" property="associatedInstId" jdbcType="VARCHAR" />
+    <result column="PROC_INST_ID_" property="procInstId" jdbcType="VARCHAR" />
+    <result column="PROC_INST_NAME_" property="procInstName" jdbcType="VARCHAR" />
+    <result column="PROC_DEF_ID_" property="procDefId" jdbcType="VARCHAR" />
+    <result column="BUSINESS_KEY_" property="businessKey" jdbcType="VARCHAR" />
+    <result column="ACT_ID_" property="actId" jdbcType="VARCHAR" />
+    <result column="ACT_NAME_" property="actName" jdbcType="VARCHAR" />
+    <result column="ACT_TYPE_" property="actType" jdbcType="VARCHAR" />
+    <result column="TASK_ID_" property="taskId" jdbcType="VARCHAR" />
+    <result column="USER_ID_" property="userId" jdbcType="VARCHAR" />
+    <result column="GROUPS_" property="groups" jdbcType="VARCHAR" />
+    <result column="COMPLETE_TIME_" property="completeTime" jdbcType="TIMESTAMP" />
+    <result column="MESSAGE_" property="message" jdbcType="VARCHAR" />
+    <result column="ADVICE_" property="advice" jdbcType="VARCHAR" />
+    <result column="IS_START_" property="startAct" jdbcType="BOOLEAN" />
+    <result column="ORDER_" property="order" jdbcType="INTEGER" />
+  </resultMap>
+  
+   
+  <select id="selectBizComment" parameterType="string" resultMap="BaseResultMap">
+    select * from ${prefix}ACT_HI_BIZ_COMMENT where ID_ = #{id}
+  </select>
+  
+   <select id="selectBizCommentByAssociatedInstIdAndProcDefId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="BaseResultMap">
+    select * from ${prefix}ACT_HI_BIZ_COMMENT where ASSOCIATED_INST_ID_ = #{parameter.associatedInstId} and PROC_DEF_ID_=#{parameter.procDefId}
+  </select>
+  
+  
+   <select id="selectBizCommentByProcInstIdAndActId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="BaseResultMap">
+    select * from ${prefix}ACT_HI_BIZ_COMMENT where PROC_INST_ID_ = #{parameter.processInstId} and ACT_ID_=#{parameter.actId}
+  </select>
+
+  <select id="selectBizCommentByTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="BaseResultMap">
+    select * from ${prefix}ACT_HI_BIZ_COMMENT where TASK_ID_ = #{parameter}
+  </select>
+  
+    <select id="selectBizCommentByBusinessKey" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="BaseResultMap">
+    select * from ${prefix}ACT_HI_BIZ_COMMENT 
+    where BUSINESS_KEY_= #{parameter} and ACT_NAME_!='开始' and TASK_ID_ is not null
+    order by COMPLETE_TIME_ ,ORDER_
+  </select>
+  
+  
+   <select id="selectBizCommentAfterOrder" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="BaseResultMap">
+    select * from ${prefix}ACT_HI_BIZ_COMMENT 
+    where ASSOCIATED_INST_ID_ = #{parameter.businessInstId}
+    <if test="parameter.order!=null">
+    	<!--流程定义不等于指定参数的，需要在顺序上大于-->
+    	and ((PROC_DEF_ID_!=#{parameter.processDefinitionId} and ORDER_ >=${parameter.order})or PROC_DEF_ID_=#{parameter.processDefinitionId})
+    </if> 
+    
+    <if test="parameter.actType!=null">
+    	and ACT_TYPE_=#{parameter.actType}
+    </if>
+    order by ORDER_ 
+    
+  </select>
+  
+  
+  <select id="selectAssociatedInstIdByProcessInstId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="String">
+    select ASSOCIATED_INST_ID_ from ${prefix}ACT_HI_BIZ_COMMENT where PROC_INST_ID_=#{parameter}
+  </select>
+  
+   <select id="selectByProcessInstId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="BaseResultMap">
+    select * from ${prefix}ACT_HI_BIZ_COMMENT where PROC_INST_ID_=#{parameter}
+  </select>
+  
+  
+</mapper>
