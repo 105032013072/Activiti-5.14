@@ -165,10 +165,15 @@ public class GetBizCommentsAfterTaskCmd implements Command<List<BizComment>>, Se
 					ExecutionEntity executionEntity=commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
 					if(executionEntity!=null){//是当前正在活动的流程实例
 						//获取当前活动任务Id
-						List<TaskEntity>  taskList=commandContext.getTaskEntityManager().findTasksByProcessInstanceId(executionEntity.getId());
-						if(taskList.size()>0){
-							currentTaskArrive=commandContext.getProcessEngineConfiguration().getHistoryService().getAfterActivityCmd(taskList.get(0).getId());
+						List<TaskEntity> taskList = commandContext.getTaskEntityManager()
+								.findTasksByProcessInstanceId(executionEntity.getId());
+
+						for (TaskEntity taskEntity : taskList) {
+							List<ActivityImpl> tmp = commandContext.getProcessEngineConfiguration().getHistoryService().getAfterActivityCmd(taskEntity.getId());
+							List<ActivityImpl> cleanList = cleamListContain(currentTaskArrive, tmp);
+							currentTaskArrive.addAll(cleanList);
 						}
+
 						List<BizComment> sort=new ArrayList<BizComment>();
 						for (ActivityImpl activityImpl : currentTaskArrive) {
 							if(ActivityImplConstants.ACTIVITYIMPL_TYPE_USERTASK.equals(activityImpl.getProperty("type"))){
@@ -204,13 +209,24 @@ public class GetBizCommentsAfterTaskCmd implements Command<List<BizComment>>, Se
 			throw new ActivitiIllegalArgumentException("can,t find BizComment by businessKey="+businessKey);
 		}
 		return sortResult;
-		
-		
-		
-		
-		
-		
+	
 	}
+	
+	
+	public List<ActivityImpl> cleamListContain(List<ActivityImpl> source,List<ActivityImpl> addList){
+		List<ActivityImpl> result=new ArrayList<ActivityImpl>();
+		
+		for (ActivityImpl activityImpl : addList) {
+			for (ActivityImpl sourceActivityImpl : source) {
+				if(sourceActivityImpl.getId().equals(activityImpl.getId())){
+					break;
+				}
+			}
+			result.add(activityImpl);
+		}
+		
+		return result;
+	} 
 	
 	
 	private BizComment getFirst(List<BizComment> searchResult){
